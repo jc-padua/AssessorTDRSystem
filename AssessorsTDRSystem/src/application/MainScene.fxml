@@ -44,6 +44,9 @@
                            <columns>
                               <TableColumn prefWidth="75.0" text="C1" />
                               <TableColumn prefWidth="75.0" text="C2" />
+                              <TableColumn prefWidth="75.0" text="C3" />
+                              <TableColumn prefWidth="75.0" text="C4" />
+                              <TableColumn prefWidth="75.0" text="C5" />
                            </columns>
                         </TableView>
                      </children>
