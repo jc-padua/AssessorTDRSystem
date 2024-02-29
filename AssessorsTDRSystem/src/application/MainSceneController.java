@@ -36,18 +36,20 @@ public class MainSceneController {
 		 String owner = tfOWNER.getText();
 		 String location = tfLOCATION.getText();
 		 
-		 Alert alert = new Alert(Alert.AlertType.ERROR);
 		 try {
 			 if (pin.isEmpty() && snumber.isEmpty() && owner.isEmpty() && location.isEmpty()) {
+				 Alert alert = new Alert(Alert.AlertType.ERROR);
 				 alert.setTitle("Input Validation");
 				 alert.setHeaderText("Please fill the input field");
 				 alert.show();
 				 return;
 			 } else {
-				 System.out.println(pin);
-				 System.out.println(snumber);
-				 System.out.println(owner);
-				 System.out.println(location);
+				 Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				 alert.setTitle("Sample");
+				 alert.setHeaderText("Sample");
+				 alert.setContentText(pin + "\n" + snumber + "\n" + owner + "\n" + location);
+				 alert.show();
+				 return;
 			 }
 			
 		} catch (Exception e) {
