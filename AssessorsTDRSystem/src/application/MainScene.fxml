@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -64,5 +65,6 @@
       </Label>
       <Label layoutX="850.0" layoutY="14.0" prefHeight="26.0" prefWidth="118.0" text="mm/dd/yyyy" textAlignment="RIGHT" />
       <Button fx:id="btnUPDATE" layoutX="40.0" layoutY="571.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #89d264;" stylesheets="@application.css" text="Update" />
+      <DatePicker fx:id="dpDATE" editable="false" layoutX="676.0" layoutY="15.0" />
    </children>
 </AnchorPane>

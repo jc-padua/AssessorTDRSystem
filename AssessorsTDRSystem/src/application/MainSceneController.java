@@ -2,6 +2,7 @@ package application;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import javafx.scene.control.DatePicker;
 
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
@@ -27,6 +28,8 @@ public class MainSceneController {
 	private Button btnUPLOAD;
 	@FXML
 	private Button btnADD;
+	@FXML
+	private DatePicker dpDATE;
 
 	 @FXML
 	    void addData(ActionEvent event) {
