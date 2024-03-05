@@ -11,6 +11,8 @@ import javafx.scene.control.DatePicker;
 
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
+import javafx.scene.control.TableColumn; 
+import javafx.scene.control.TableView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -35,14 +37,27 @@ public class MainSceneController {
 	private Button btnADD;
 	@FXML
 	private DatePicker dpDATE;
+	@FXML
+	private TableView<td_data> TDTaxDec;
+	@FXML
+	private TableColumn<td_data, String> pinColumn;
+	@FXML
+	private TableColumn<td_data, String> seriesColumn;
+	@FXML
+	private TableColumn<td_data, String> ownerColumn;
+	@FXML
+	private TableColumn<td_data, String> locationColumn;
 
-	 @FXML
-	    void addData(ActionEvent event) {
+		@FXML
+		void addData(ActionEvent event) {
 		 
 		 String pin = tfPIN.getText();
 		 String snumber = tfSNUMBER.getText();
 		 String owner = tfOWNER.getText();
 		 String location = tfLOCATION.getText();
+		 
+		 	td_data newData = new td_data(pin, snumber, owner, location);
+		 	TDTaxDec.getItems().add(newData);
 		 
 		 try {
 //			 if (pin.isEmpty() && snumber.isEmpty() && owner.isEmpty() && location.isEmpty()) {
@@ -62,7 +77,7 @@ public class MainSceneController {
 			 
 			 Class.forName("com.mysql.cj.jdbc.Driver");
 			 con = DriverManager.getConnection("jdbc:mysql://localhost/assessor_db", "root", "admin");
-			 pst = con.prepareStatement("INSERT INTO tax_dec (pin,serial_number,owner,location) VALUES (?,?,?,?) ");
+			 pst = con.prepareStatement("INSERT INTO tax_dec (pin,series_number,owner,location) VALUES (?,?,?,?) ");
 			 pst.setString(1, pin);
 			 pst.setString(2, snumber);
 			 pst.setString(3, owner);
