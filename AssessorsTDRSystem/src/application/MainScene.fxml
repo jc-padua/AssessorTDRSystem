@@ -26,9 +26,9 @@
                      <children>
                         <TableView fx:id="TDTaxDec" layoutX="1.0" layoutY="1.0" prefHeight="418.0" prefWidth="700.0">
                           <columns>
-                            <TableColumn fx:id="pinColumn" prefWidth="160.0" text="C1" />
+                            <TableColumn fx:id="pinColumn" prefWidth="200.0" text="C1" />
                             <TableColumn fx:id="seriesColumn" prefWidth="50.0" text="C2" />
-                              <TableColumn fx:id="ownerColumn" prefWidth="180.0" text="C3" />
+                              <TableColumn fx:id="ownerColumn" prefWidth="220.0" text="C3" />
                               <TableColumn fx:id="locationColumn" prefWidth="180.0" text="C4" />
                               <TableColumn prefWidth="50.0" text="C5" />
                           </columns>
