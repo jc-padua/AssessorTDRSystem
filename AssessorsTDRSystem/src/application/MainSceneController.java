@@ -71,16 +71,17 @@ public class MainSceneController implements Initializable {
         locationColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLocation()));
         
         TDTaxDec.setItems(taxDecList);
-       
+
         loadDataFromDatabase();
+        checkDB();
     }
 
     private void loadDataFromDatabase() {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost/assessor_db", "root", "admin");
+        	Class.forName("org.sqlite.JDBC");
+			con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");
             Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM tax_dec");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM taxDec");
 
             while (rs.next()) {
                 String pin = rs.getString("pin");
@@ -98,7 +99,6 @@ public class MainSceneController implements Initializable {
             e.printStackTrace();
             showErrorAlert("Error loading data from the database");
         } finally {
-            // Close resources
             try {
                 if (con != null) {
                     con.close();
@@ -125,24 +125,9 @@ public class MainSceneController implements Initializable {
 		 String location = tfLOCATION.getText();
 		 
 		 try {
-//			 if (pin.isEmpty() && snumber.isEmpty() && owner.isEmpty() && location.isEmpty()) {
-//				 Alert alert = new Alert(Alert.AlertType.ERROR);
-//				 alert.setTitle("Input Validation");
-//				 alert.setHeaderText("Please fill the input field");
-//				 alert.show();
-//				 return;
-//			 } else {
-//				 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//				 alert.setTitle("Sample");
-//				 alert.setHeaderText("Sample");
-//				 alert.setContentText(pin + "\n" + snumber + "\n" + owner + "\n" + location);
-//				 alert.show();
-//				 return;
-//			 }
-			 
-			 Class.forName("com.mysql.cj.jdbc.Driver");
-			 con = DriverManager.getConnection("jdbc:mysql://localhost/assessor_db", "root", "admin");
-			 pst = con.prepareStatement("INSERT INTO tax_dec (pin,series_number,owner,location) VALUES (?,?,?,?) ");
+			 Class.forName("org.sqlite.JDBC");
+			 con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");
+			 pst = con.prepareStatement("INSERT INTO taxDec (pin,series_number,owner,location) VALUES (?,?,?,?) ");
 			 pst.setString(1, pin);
 			 pst.setString(2, snumber);
 			 pst.setString(3, owner);
@@ -187,11 +172,31 @@ public class MainSceneController implements Initializable {
 		 }
 	}
 	private void clearInputFields() {
-		// TODO Auto-generated method stub
 		tfPIN.clear();
         tfSNUMBER.clear();
         tfOWNER.clear();
         tfLOCATION.clear();
 	}
+	
+	public void checkDB() {
+	    try {
+	        Class.forName("org.sqlite.JDBC");
+	        con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");
+	        System.out.println("Connected to the database");
+	    } catch (SQLException | ClassNotFoundException e) {
+	        e.printStackTrace();
+	        showErrorAlert("Error connecting to the database");
+	    } finally {
+	        try {
+	            if (con != null) {
+	                con.close();
+	            }
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();
+	        }
+	    }
+	}
+
+
 	
 }
