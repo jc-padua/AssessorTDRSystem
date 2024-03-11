@@ -21,7 +21,7 @@ public class Main extends Application {
 			DatePicker dpDATE = (DatePicker) scene.lookup("#dpDATE");
 			dpDATE.setValue(LocalDate.now());
 			
-			primaryStage.setTitle("Hello World");
+			primaryStage.setTitle("Tax Declarations System");
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {
