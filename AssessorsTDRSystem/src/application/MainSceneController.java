@@ -11,6 +11,7 @@ import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.MenuItem;
 
 import java.io.File;
 
@@ -22,11 +23,15 @@ import javafx.fxml.Initializable;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseButton;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -80,9 +85,78 @@ public class MainSceneController implements Initializable {
         TDTaxDec.setItems(taxDecList);
 
         loadDataFromDatabase();
+        contextMenu();
         checkDB();
+        
+        
     }
+    
 
+	public void contextMenu() {
+		ContextMenu contextMenu = new ContextMenu();
+		MenuItem menuDelete = new MenuItem("Delete");
+		MenuItem menuArchive = new MenuItem("Archive");
+		contextMenu.getItems().addAll(menuDelete, menuArchive);
+		
+		
+		TDTaxDec.setRowFactory(tv -> {
+            TableRow<td_data> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+                    td_data rowData = row.getItem();
+                    if (rowData != null) {
+                        System.out.println("Selected item: " + rowData);
+                    }
+                }
+            });
+            row.contextMenuProperty().bind(
+                    Bindings.when(row.emptyProperty())
+                            .then((ContextMenu) null)
+                            .otherwise(contextMenu)
+            );
+            return row;
+        });
+		
+		menuDelete.setOnAction(event -> {
+			td_data selectedItem = TDTaxDec.getSelectionModel().getSelectedItem();
+			if (selectedItem != null) {
+				TDTaxDec.getItems().remove(selectedItem);
+				deleteFromDatabase(selectedItem);
+			}
+		});
+		
+		menuArchive.setOnAction(event -> {
+			td_data selectedItem = TDTaxDec.getSelectionModel().getSelectedItem();
+			if (selectedItem != null) {
+//				Implement item archiving
+			}
+		});
+	}
+
+	private void deleteFromDatabase(td_data selectedItem) {
+		try {
+	        Class.forName("org.sqlite.JDBC");
+	        con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");
+	        pst = con.prepareStatement("DELETE FROM taxDec WHERE pin = ?");
+	        pst.setString(1, selectedItem.getPin());
+	        pst.executeUpdate();
+	    } catch (SQLException | ClassNotFoundException e) {
+	        e.printStackTrace();
+	        showErrorAlert("Error deleting data from the database");
+	    } finally {
+	        try {
+	            if (pst != null) {
+	                pst.close();
+	            }
+	            if (con != null) {
+	                con.close();
+	            }
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();
+	        }
+	    }
+	}
+	
     private void loadDataFromDatabase() {
         try {
         	Class.forName("org.sqlite.JDBC");
