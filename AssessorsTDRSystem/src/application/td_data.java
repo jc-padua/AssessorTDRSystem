@@ -5,14 +5,14 @@ public class td_data {
     private String snumber;
     private String owner;
     private String location;
+    private Boolean archive;
 
-
-    public td_data(String pin, String snumber, String owner, String location) {
-		// TODO Auto-generated constructor stub
+    public td_data(String pin, String snumber, String owner, String location, Boolean archive) {
     	this.pin = pin;
         this.snumber = snumber;
         this.owner = owner;
         this.location = location;
+        this.archive = archive;
 	}
 
 	public String getPin() {
@@ -47,6 +47,14 @@ public class td_data {
         this.location = location;
     }
 
+    public Boolean getArchive() {
+    	return archive;
+    }
+    
+    public void setArchive(Boolean archive) {
+    	this.archive = archive;
+    }
+    
     @Override
     public String toString() {
         return "td_data{" +
@@ -54,6 +62,7 @@ public class td_data {
                 ", snumber='" + snumber + '\'' +
                 ", owner='" + owner + '\'' +
                 ", location='" + location + '\'' +
+                ", archive='" + archive + '\'' +
                 '}';
     }
 }

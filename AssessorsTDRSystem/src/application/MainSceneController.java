@@ -88,7 +88,6 @@ public class MainSceneController implements Initializable {
         contextMenu();
         checkDB();
         
-        
     }
     
 
@@ -129,10 +128,37 @@ public class MainSceneController implements Initializable {
 			td_data selectedItem = TDTaxDec.getSelectionModel().getSelectedItem();
 			if (selectedItem != null) {
 //				Implement item archiving
+				archiveItem(selectedItem);
+				
 			}
 		});
 	}
 
+	private void archiveItem(td_data selectedItem) {
+		try {
+	        Class.forName("org.sqlite.JDBC");
+	        con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");
+	        pst = con.prepareStatement("UPDATE taxDec SET archive = 1 WHERE pin = ?");
+	        pst.setString(1, selectedItem.getPin());
+	        pst.executeUpdate();
+	        System.out.println("Successfuly Modified");
+	    } catch (SQLException | ClassNotFoundException e) {
+	        e.printStackTrace();
+	        showErrorAlert("Error deleting data from the database");
+	    } finally {
+	        try {
+	            if (pst != null) {
+	                pst.close();
+	            }
+	            if (con != null) {
+	                con.close();
+	            }
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();
+	        }
+	    }
+	}
+	
 	private void deleteFromDatabase(td_data selectedItem) {
 		try {
 	        Class.forName("org.sqlite.JDBC");
@@ -169,8 +195,9 @@ public class MainSceneController implements Initializable {
                 String series = rs.getString("series_number");
                 String owner = rs.getString("owner");
                 String location = rs.getString("location");
+                Boolean archive = rs.getBoolean("archive");
 
-                td_data taxData = new td_data(pin, series, owner, location);
+                td_data taxData = new td_data(pin, series, owner, location, archive);
                 taxDecList.add(taxData);
             }
 
@@ -226,15 +253,16 @@ public class MainSceneController implements Initializable {
 		 String snumber = tfSNUMBER.getText();
 		 String owner = tfOWNER.getText();
 		 String location = tfLOCATION.getText();
-		 
+		 Boolean archive = false;
 		 try {
 			 Class.forName("org.sqlite.JDBC");
 			 con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");
-			 pst = con.prepareStatement("INSERT INTO taxDec (pin,series_number,owner,location) VALUES (?,?,?,?) ");
+			 pst = con.prepareStatement("INSERT INTO taxDec (pin,series_number,owner,location,archive) VALUES (?,?,?,?,?) ");
 			 pst.setString(1, pin);
 			 pst.setString(2, snumber);
 			 pst.setString(3, owner);
 			 pst.setString(4, location);
+			 pst.setBoolean(5, archive);
 			 
 			 int affectedRows = pst.executeUpdate();
 			 if (affectedRows > 0) {
@@ -244,7 +272,7 @@ public class MainSceneController implements Initializable {
 	             alert.setContentText("Successfully Added!");
 	             alert.show();
 	             
-	             td_data newTaxData = new td_data(pin, snumber, owner, location);
+	             td_data newTaxData = new td_data(pin, snumber, owner, location, archive);
 	             taxDecList.add(newTaxData);
 	             TDTaxDec.setItems(taxDecList);
 	             
