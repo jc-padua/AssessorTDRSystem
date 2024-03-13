@@ -1,6 +1,7 @@
 package application;
 
 import java.sql.Connection;
+
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -10,6 +11,8 @@ import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 import javafx.scene.control.DatePicker;
+
+import java.io.File;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -25,6 +28,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 public class MainSceneController implements Initializable {
 	
@@ -44,6 +49,8 @@ public class MainSceneController implements Initializable {
 	private Button btnUPLOAD;
 	@FXML
 	private Button btnADD;
+	@FXML
+	private Button btnDELETE;
 	@FXML
 	private DatePicker dpDATE;
 	@FXML
@@ -117,6 +124,28 @@ public class MainSceneController implements Initializable {
         alert.show();
     }
     
+    @FXML
+    void uploadFile(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Upload File");
+        fileChooser.getExtensionFilters().addAll(
+                new ExtensionFilter("Text Files", "*.txt"),
+                new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"),
+                new ExtensionFilter("All Files", "*.*")
+        );
+
+        // Show open file dialog
+        File selectedFile = fileChooser.showOpenDialog(null);
+
+        if (selectedFile != null) {
+            // You can handle the selected file here, e.g., display its path
+            System.out.println("Selected File: " + selectedFile.getAbsolutePath());
+            // Add further processing logic as needed
+        } else {
+            System.out.println("File selection canceled.");
+        }
+    }
+
 	 @FXML
 	 void addData(ActionEvent event) {
 		 String pin = tfPIN.getText();
