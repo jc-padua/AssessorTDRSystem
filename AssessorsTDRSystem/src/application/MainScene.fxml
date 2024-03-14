@@ -41,12 +41,12 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView prefHeight="418.0" prefWidth="708.0">
+                        <TableView fx:id="ATDTaxDec" prefHeight="418.0" prefWidth="708.0">
                            <columns>
-                              <TableColumn prefWidth="75.0" text="C1" />
-                              <TableColumn prefWidth="75.0" text="C2" />
-                              <TableColumn prefWidth="75.0" text="C3" />
-                              <TableColumn prefWidth="75.0" text="C4" />
+                              <TableColumn fx:id="archivedPinColumn" prefWidth="75.0" text="C1" />
+                              <TableColumn fx:id="archivedSeriesColumn" prefWidth="75.0" text="C2" />
+                              <TableColumn fx:id="archivedOwnerColumn" prefWidth="75.0" text="C3" />
+                              <TableColumn fx:id="archivedLocationColumn" prefWidth="75.0" text="C4" />
                               <TableColumn prefWidth="75.0" text="C5" />
                            </columns>
                         </TableView>

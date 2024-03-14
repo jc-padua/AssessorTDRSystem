@@ -68,11 +68,23 @@ public class MainSceneController implements Initializable {
     private TableColumn<td_data, String> ownerColumn;
     @FXML
     private TableColumn<td_data, String> locationColumn;
+    @FXML
+    private TableView<td_data> ATDTaxDec;
+    @FXML
+    private TableColumn<td_data, String> archivedPinColumn;
+    @FXML
+    private TableColumn<td_data, String> archivedSeriesColumn;
+    @FXML
+    private TableColumn<td_data, String> archivedOwnerColumn;
+    @FXML
+    private TableColumn<td_data, String> archivedLocationColumn;
 
     private ObservableList<td_data> taxDecList;
+    private ObservableList<td_data> archivedTaxDecList;
     
     public MainSceneController() {
     	taxDecList = FXCollections.observableArrayList();
+    	archivedTaxDecList = FXCollections.observableArrayList();
     }
    
     @Override
@@ -82,8 +94,14 @@ public class MainSceneController implements Initializable {
         ownerColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOwner()));
         locationColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLocation()));
         
+        archivedPinColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPin()));
+        archivedSeriesColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSnumber()));
+        archivedOwnerColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOwner()));
+        archivedLocationColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLocation()));
+        
         TDTaxDec.setItems(taxDecList);
-
+        ATDTaxDec.setItems(archivedTaxDecList);
+        
         loadDataFromDatabase();
         contextMenu();
         checkDB();
@@ -116,6 +134,25 @@ public class MainSceneController implements Initializable {
             return row;
         });
 		
+		ATDTaxDec.setRowFactory(tv -> {
+            TableRow<td_data> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+                    td_data rowData = row.getItem();
+                    if (rowData != null) {
+                        System.out.println("Selected item: " + rowData);
+                    }
+                }
+            });
+            row.contextMenuProperty().bind(
+                    Bindings.when(row.emptyProperty())
+                            .then((ContextMenu) null)
+                            .otherwise(contextMenu)
+            );
+            return row;
+        });
+		
+		
 		menuDelete.setOnAction(event -> {
 			td_data selectedItem = TDTaxDec.getSelectionModel().getSelectedItem();
 			if (selectedItem != null) {
@@ -129,7 +166,8 @@ public class MainSceneController implements Initializable {
 			if (selectedItem != null) {
 //				Implement item archiving
 				archiveItem(selectedItem);
-				
+				TDTaxDec.getItems().remove(selectedItem);
+				archivedTaxDecList.add(selectedItem);
 			}
 		});
 	}
@@ -198,7 +236,11 @@ public class MainSceneController implements Initializable {
                 Boolean archive = rs.getBoolean("archive");
 
                 td_data taxData = new td_data(pin, series, owner, location, archive);
-                taxDecList.add(taxData);
+                if (!archive) {
+                	taxDecList.add(taxData);
+                } else {
+                	archivedTaxDecList.add(taxData);
+                }
             }
 
             rs.close();
