@@ -152,6 +152,37 @@ public class MainSceneController implements Initializable {
 				
 			}
 		});
+		
+		ContextMenu acontextMenu = new ContextMenu();
+		MenuItem amenuArchive = new MenuItem("Restore");
+		acontextMenu.getItems().addAll(amenuArchive);
+		
+		ATDTaxDec.setRowFactory(tv -> {
+            TableRow<atd_data> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+                    atd_data rowData = row.getItem();
+                    if (rowData != null) {
+                        System.out.println("Selected item: " + rowData);
+                    }
+                }
+            });
+            row.contextMenuProperty().bind(
+                    Bindings.when(row.emptyProperty())
+                            .then((ContextMenu) null)
+                            .otherwise(acontextMenu)
+            );
+            return row;
+        });
+		
+		amenuArchive.setOnAction(event -> {
+			atd_data selectedItem = ATDTaxDec.getSelectionModel().getSelectedItem();
+			if (selectedItem != null) {
+				restoreItem(selectedItem);
+				
+			}
+		});
+		
 	}
 
 	private void archiveItem(td_data selectedItem) {
@@ -166,6 +197,35 @@ public class MainSceneController implements Initializable {
 	        loadArchiveDataFromDatabase();
 
 	        
+	        System.out.println("Successfuly Modified");
+	    } catch (SQLException | ClassNotFoundException e) {
+	        e.printStackTrace();
+	        showErrorAlert("Error deleting data from the database");
+	    } finally {
+	        try {
+	            if (pst != null) {
+	                pst.close();
+	            }
+	            if (con != null) {
+	                con.close();
+	            }
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();
+	        }
+	    }
+	}
+	
+	private void restoreItem(atd_data selectedItem) {
+		try {
+	        Class.forName("org.sqlite.JDBC");
+	        con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");
+	        pst = con.prepareStatement("UPDATE taxDec SET archive = 0 WHERE pin = ?");
+	        pst.setString(1, selectedItem.getPin());	
+	        pst.executeUpdate();
+	        
+	        ataxDecList.remove(selectedItem);
+	        loadDataFromDatabase();
+
 	        System.out.println("Successfuly Modified");
 	    } catch (SQLException | ClassNotFoundException e) {
 	        e.printStackTrace();
