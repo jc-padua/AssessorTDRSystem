@@ -179,7 +179,6 @@ public class MainSceneController implements Initializable {
 			atd_data selectedItem = ATDTaxDec.getSelectionModel().getSelectedItem();
 			if (selectedItem != null) {
 				restoreItem(selectedItem);
-				
 			}
 		});
 		
@@ -195,7 +194,6 @@ public class MainSceneController implements Initializable {
 	        
 	        taxDecList.remove(selectedItem);
 	        loadArchiveDataFromDatabase();
-
 	        
 	        System.out.println("Successfuly Modified");
 	    } catch (SQLException | ClassNotFoundException e) {
@@ -214,7 +212,7 @@ public class MainSceneController implements Initializable {
 	        }
 	    }
 	}
-	
+
 	private void restoreItem(atd_data selectedItem) {
 		try {
 	        Class.forName("org.sqlite.JDBC");
@@ -243,7 +241,7 @@ public class MainSceneController implements Initializable {
 	        }
 	    }
 	}
-	
+	// TO DELETE
 	private void deleteFromDatabase(td_data selectedItem) {
 		try {
 	        Class.forName("org.sqlite.JDBC");
@@ -269,6 +267,7 @@ public class MainSceneController implements Initializable {
 	}
 	
     private void loadDataFromDatabase() {
+    	taxDecList.clear();
         try {
         	Class.forName("org.sqlite.JDBC");
 			con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");
@@ -304,6 +303,7 @@ public class MainSceneController implements Initializable {
     }
     
     private void loadArchiveDataFromDatabase() {
+    	ataxDecList.clear();
         try {
         	Class.forName("org.sqlite.JDBC");
 			con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");

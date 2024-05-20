@@ -22,12 +22,14 @@ public class Main extends Application {
 		try {
 			Parent root = FXMLLoader.load(getClass().getResource("MainScene.fxml"));
 			Scene scene = new Scene(root);
-			
+			 
 			DatePicker dpDATE = (DatePicker) scene.lookup("#dpDATE");
 			dpDATE.setValue(LocalDate.now());
 			
 			primaryStage.setTitle("Tax Declarations System");
 			primaryStage.setScene(scene);
+			primaryStage.setMaximized(true);
+			primaryStage.setResizable(false);
 			primaryStage.show();
 		
 		} catch(Exception e) {
