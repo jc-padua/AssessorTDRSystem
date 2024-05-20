@@ -61,6 +61,8 @@ public class MainSceneController implements Initializable {
 	@FXML
 	private TableView<td_data> TDTaxDec;
 	@FXML
+	private TableView<atd_data> ATDTaxDec;
+	@FXML
 	private TableColumn<td_data, String> pinColumn;
 	@FXML
     private TableColumn<td_data, String> seriesColumn;
@@ -69,22 +71,21 @@ public class MainSceneController implements Initializable {
     @FXML
     private TableColumn<td_data, String> locationColumn;
     @FXML
-    private TableView<td_data> ATDTaxDec;
+	private TableColumn<atd_data, String> apinColumn;
+	@FXML
+    private TableColumn<atd_data, String> aseriesColumn;
     @FXML
-    private TableColumn<td_data, String> archivedPinColumn;
+    private TableColumn<atd_data, String> aownerColumn;
     @FXML
-    private TableColumn<td_data, String> archivedSeriesColumn;
-    @FXML
-    private TableColumn<td_data, String> archivedOwnerColumn;
-    @FXML
-    private TableColumn<td_data, String> archivedLocationColumn;
-
+    private TableColumn<atd_data, String> alocationColumn;
+    
     private ObservableList<td_data> taxDecList;
-    private ObservableList<td_data> archivedTaxDecList;
+    
+    private ObservableList<atd_data> ataxDecList;
     
     public MainSceneController() {
     	taxDecList = FXCollections.observableArrayList();
-    	archivedTaxDecList = FXCollections.observableArrayList();
+    	ataxDecList = FXCollections.observableArrayList();
     }
    
     @Override
@@ -94,19 +95,21 @@ public class MainSceneController implements Initializable {
         ownerColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOwner()));
         locationColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLocation()));
         
-        archivedPinColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPin()));
-        archivedSeriesColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSnumber()));
-        archivedOwnerColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOwner()));
-        archivedLocationColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLocation()));
+        apinColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPin()));
+        aseriesColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSnumber()));
+        aownerColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOwner()));
+        alocationColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLocation()));
+        
         
         TDTaxDec.setItems(taxDecList);
-        ATDTaxDec.setItems(archivedTaxDecList);
+        ATDTaxDec.setItems(ataxDecList);
         
         loadDataFromDatabase();
+        loadArchiveDataFromDatabase();
         contextMenu();
         checkDB();
         
-    }
+    } 
     
 
 	public void contextMenu() {
@@ -134,25 +137,6 @@ public class MainSceneController implements Initializable {
             return row;
         });
 		
-		ATDTaxDec.setRowFactory(tv -> {
-            TableRow<td_data> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
-                    td_data rowData = row.getItem();
-                    if (rowData != null) {
-                        System.out.println("Selected item: " + rowData);
-                    }
-                }
-            });
-            row.contextMenuProperty().bind(
-                    Bindings.when(row.emptyProperty())
-                            .then((ContextMenu) null)
-                            .otherwise(contextMenu)
-            );
-            return row;
-        });
-		
-		
 		menuDelete.setOnAction(event -> {
 			td_data selectedItem = TDTaxDec.getSelectionModel().getSelectedItem();
 			if (selectedItem != null) {
@@ -164,10 +148,8 @@ public class MainSceneController implements Initializable {
 		menuArchive.setOnAction(event -> {
 			td_data selectedItem = TDTaxDec.getSelectionModel().getSelectedItem();
 			if (selectedItem != null) {
-//				Implement item archiving
 				archiveItem(selectedItem);
-				TDTaxDec.getItems().remove(selectedItem);
-				archivedTaxDecList.add(selectedItem);
+				
 			}
 		});
 	}
@@ -177,8 +159,13 @@ public class MainSceneController implements Initializable {
 	        Class.forName("org.sqlite.JDBC");
 	        con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");
 	        pst = con.prepareStatement("UPDATE taxDec SET archive = 1 WHERE pin = ?");
-	        pst.setString(1, selectedItem.getPin());
+	        pst.setString(1, selectedItem.getPin());	
 	        pst.executeUpdate();
+	        
+	        taxDecList.remove(selectedItem);
+	        loadArchiveDataFromDatabase();
+
+	        
 	        System.out.println("Successfuly Modified");
 	    } catch (SQLException | ClassNotFoundException e) {
 	        e.printStackTrace();
@@ -226,7 +213,7 @@ public class MainSceneController implements Initializable {
         	Class.forName("org.sqlite.JDBC");
 			con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");
             Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM taxDec");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM taxDec WHERE archive = 0");
 
             while (rs.next()) {
                 String pin = rs.getString("pin");
@@ -236,13 +223,10 @@ public class MainSceneController implements Initializable {
                 Boolean archive = rs.getBoolean("archive");
 
                 td_data taxData = new td_data(pin, series, owner, location, archive);
-                if (!archive) {
-                	taxDecList.add(taxData);
-                } else {
-                	archivedTaxDecList.add(taxData);
-                }
+                taxDecList.add(taxData);
             }
 
+            TDTaxDec.setItems(taxDecList);
             rs.close();
             stmt.close();
         } catch (SQLException | ClassNotFoundException e) {
@@ -258,6 +242,42 @@ public class MainSceneController implements Initializable {
             }
         }
     }
+    
+    private void loadArchiveDataFromDatabase() {
+        try {
+        	Class.forName("org.sqlite.JDBC");
+			con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM taxDec WHERE archive = 1");
+
+            while (rs.next()) {
+                String pin = rs.getString("pin");
+                String series = rs.getString("series_number");
+                String owner = rs.getString("owner");
+                String location = rs.getString("location");
+                Boolean archive = rs.getBoolean("archive");
+
+                atd_data taxData = new atd_data(pin, series, owner, location, archive);
+                ataxDecList.add(taxData);
+            }
+
+            ATDTaxDec.setItems(ataxDecList);
+            rs.close();
+            stmt.close();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            showErrorAlert("Error loading data from the database");
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+    
 
     private void showErrorAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -277,20 +297,17 @@ public class MainSceneController implements Initializable {
                 new ExtensionFilter("All Files", "*.*")
         );
 
-        // Show open file dialog
         File selectedFile = fileChooser.showOpenDialog(null);
 
         if (selectedFile != null) {
-            // You can handle the selected file here, e.g., display its path
             System.out.println("Selected File: " + selectedFile.getAbsolutePath());
-            // Add further processing logic as needed
         } else {
             System.out.println("File selection canceled.");
         }
     }
 
 	 @FXML
-	 void addData(ActionEvent event) {
+	void addData(ActionEvent event) {
 		 String pin = tfPIN.getText();
 		 String snumber = tfSNUMBER.getText();
 		 String owner = tfOWNER.getText();
@@ -344,7 +361,8 @@ public class MainSceneController implements Initializable {
 			 }
 		 }
 	}
-	private void clearInputFields() {
+	
+	 private void clearInputFields() {
 		tfPIN.clear();
         tfSNUMBER.clear();
         tfOWNER.clear();
