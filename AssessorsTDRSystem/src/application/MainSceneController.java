@@ -257,6 +257,8 @@ public class MainSceneController implements Initializable {
 	        loadDataFromDatabase();
 
 	        System.out.println("Successfuly Modified");
+	        
+	        setupSearch();
 	    } catch (SQLException | ClassNotFoundException e) {
 	        e.printStackTrace();
 	        showErrorAlert("Error deleting data from the database");
@@ -281,6 +283,8 @@ public class MainSceneController implements Initializable {
 	        pst = con.prepareStatement("DELETE FROM taxDec WHERE pin = ?");
 	        pst.setString(1, selectedItem.getPin());
 	        pst.executeUpdate();
+	        
+	        loadDataFromDatabase();
 	    } catch (SQLException | ClassNotFoundException e) {
 	        e.printStackTrace();
 	        showErrorAlert("Error deleting data from the database");
@@ -352,7 +356,8 @@ public class MainSceneController implements Initializable {
                 atd_data taxData = new atd_data(pin, series, owner, location, archive);
                 ataxDecList.add(taxData);
             }
-
+            
+           
             ATDTaxDec.setItems(ataxDecList);
             rs.close();
             stmt.close();
@@ -398,62 +403,63 @@ public class MainSceneController implements Initializable {
         }
     }
 
-	 @FXML
-	void addData(ActionEvent event) {
-		 String pin = tfPIN.getText();
-		 String snumber = tfSNUMBER.getText();
-		 String owner = tfOWNER.getText();
-		 String location = tfLOCATION.getText();
-		 Boolean archive = false;
-		 try {
-			 Class.forName("org.sqlite.JDBC");
-			 con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");
-			 pst = con.prepareStatement("INSERT INTO taxDec (pin,series_number,owner,location,archive) VALUES (?,?,?,?,?) ");
-			 pst.setString(1, pin);
-			 pst.setString(2, snumber);
-			 pst.setString(3, owner);
-			 pst.setString(4, location);
-			 pst.setBoolean(5, archive);
-			 
-			 int affectedRows = pst.executeUpdate();
-			 if (affectedRows > 0) {
-				 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-	             alert.setTitle("Success");
-	             alert.setHeaderText(null);
-	             alert.setContentText("Successfully Added!");
-	             alert.show();
-	             
-	             td_data newTaxData = new td_data(pin, snumber, owner, location, archive);
-	             taxDecList.add(newTaxData);
-	             TDTaxDec.setItems(taxDecList);
-	             
-	             clearInputFields();
-	             loadDataFromDatabase();
-			 }
-			 
-			
-		 } catch (SQLException e) {
-			e.printStackTrace();
-			Alert alert = new Alert(Alert.AlertType.ERROR);
-	        alert.setTitle("Error");
-	        alert.setHeaderText(null);
-	        alert.setContentText("Error occurred while adding data!");
-	        alert.show();
-		 } catch (ClassNotFoundException e) { 
-			 e.printStackTrace();
-		 } finally {
-			 try {
-				 if (pst != null) {
-					 pst.close();
-				 }
-				 if (con != null) {
-					 con.close();
-				 }
-			 } catch (SQLException ex) {
-				 ex.printStackTrace();
-			 }
-		 }
-	}
+    @FXML
+    void addData(ActionEvent event) {
+        String pin = tfPIN.getText();
+        String snumber = tfSNUMBER.getText();
+        String owner = tfOWNER.getText();
+        String location = tfLOCATION.getText();
+        Boolean archive = false;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");
+            pst = con.prepareStatement("INSERT INTO taxDec (pin,series_number,owner,location,archive) VALUES (?,?,?,?,?) ");
+            pst.setString(1, pin);
+            pst.setString(2, snumber);
+            pst.setString(3, owner);
+            pst.setString(4, location);
+            pst.setBoolean(5, archive);
+
+            int affectedRows = pst.executeUpdate();
+            if (affectedRows > 0) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText(null);
+                alert.setContentText("Successfully Added!");
+                alert.show();
+
+                td_data newTaxData = new td_data(pin, snumber, owner, location, archive);
+                taxDecList.add(newTaxData);
+                TDTaxDec.setItems(taxDecList);
+                
+                // Update search functionality
+                setupSearch();
+                
+                clearInputFields();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Error occurred while adding data!");
+            alert.show();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
 	
 	 private void clearInputFields() {
 		tfPIN.clear();
