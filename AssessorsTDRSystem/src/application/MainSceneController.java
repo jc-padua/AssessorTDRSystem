@@ -2,6 +2,7 @@ package application;
 
 import java.sql.Connection;
 
+
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -35,6 +36,8 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 
 public class MainSceneController implements Initializable {
 	
@@ -78,6 +81,8 @@ public class MainSceneController implements Initializable {
     private TableColumn<atd_data, String> aownerColumn;
     @FXML
     private TableColumn<atd_data, String> alocationColumn;
+    @FXML
+    private TextField tfSEARCH;
     
     private ObservableList<td_data> taxDecList;
     
@@ -108,9 +113,36 @@ public class MainSceneController implements Initializable {
         loadArchiveDataFromDatabase();
         contextMenu();
         checkDB();
+        setupSearch();
         
     } 
     
+    private void setupSearch () {
+    	FilteredList<td_data> filteredData = new FilteredList<>(taxDecList, b -> true);
+    		
+    	tfSEARCH.textProperty().addListener((observable, oldValue, newValue) -> {
+    		filteredData.setPredicate(td_data -> {
+    			if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+                if (td_data.getPin().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (td_data.getSnumber().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (td_data.getOwner().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (td_data.getLocation().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                return false;
+            });
+        });
+        
+        SortedList<td_data> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(TDTaxDec.comparatorProperty());
+        TDTaxDec.setItems(sortedData);
+    }
 
 	public void contextMenu() {
 		ContextMenu contextMenu = new ContextMenu();
@@ -396,6 +428,7 @@ public class MainSceneController implements Initializable {
 	             TDTaxDec.setItems(taxDecList);
 	             
 	             clearInputFields();
+	             loadDataFromDatabase();
 			 }
 			 
 			
