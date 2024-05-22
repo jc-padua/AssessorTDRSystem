@@ -119,6 +119,7 @@ public class MainSceneController implements Initializable {
     
     private void setupSearch () {
     	FilteredList<td_data> filteredData = new FilteredList<>(taxDecList, b -> true);
+    	FilteredList<atd_data> afilteredData = new FilteredList<>(ataxDecList, b -> true);
     		
     	tfSEARCH.textProperty().addListener((observable, oldValue, newValue) -> {
     		filteredData.setPredicate(td_data -> {
@@ -138,10 +139,33 @@ public class MainSceneController implements Initializable {
                 return false;
             });
         });
+    	
+    	tfSEARCH.textProperty().addListener((observable, oldValue, newValue) -> {
+    		afilteredData.setPredicate(atd_data -> {
+    			if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+                if (atd_data.getPin().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (atd_data.getSnumber().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (atd_data.getOwner().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (atd_data.getLocation().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                return false;
+            });
+        });
         
         SortedList<td_data> sortedData = new SortedList<>(filteredData);
         sortedData.comparatorProperty().bind(TDTaxDec.comparatorProperty());
         TDTaxDec.setItems(sortedData);
+        
+        SortedList<atd_data> asortedData = new SortedList<>(afilteredData);
+        asortedData.comparatorProperty().bind(ATDTaxDec.comparatorProperty());
+        ATDTaxDec.setItems(asortedData);
     }
 
 	public void contextMenu() {
@@ -282,7 +306,8 @@ public class MainSceneController implements Initializable {
 	        con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");
 	        pst = con.prepareStatement("DELETE FROM taxDec WHERE pin = ?");
 	        pst.setString(1, selectedItem.getPin());
-	        pst.executeUpdate();
+//	        pst.executeUpdate();
+	        System.out.println(selectedItem.getPin());
 	        
 	        loadDataFromDatabase();
 	    } catch (SQLException | ClassNotFoundException e) {

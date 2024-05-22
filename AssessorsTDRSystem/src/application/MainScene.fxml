@@ -19,46 +19,7 @@
       <TextField fx:id="tfOWNER" layoutX="40.0" layoutY="357.0" prefHeight="39.0" prefWidth="205.0" promptText="Enter Owner" style="-fx-background-color: #EDF1D6;" />
       <TextField fx:id="tfLOCATION" layoutX="40.0" layoutY="404.0" prefHeight="39.0" prefWidth="205.0" promptText="Enter Location" style="-fx-background-color: #EDF1D6;" />
       <Button fx:id="btnUPLOAD" layoutX="40.0" layoutY="452.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #EDF1D6;" text="Upload File" />
-      <TabPane layoutX="262.4" layoutY="210.4" prefHeight="447.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="43.0" AnchorPane.leftAnchor="262.0" AnchorPane.rightAnchor="38.0" AnchorPane.topAnchor="210.0">
-        <tabs>
-          <Tab text="Tax Declarations">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <TableView fx:id="TDTaxDec" layoutX="1.0" layoutY="1.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="418.0" prefWidth="692.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="-0.7999999999999545" AnchorPane.topAnchor="1.0">
-                          <columns>
-                            <TableColumn fx:id="pinColumn" minWidth="250.0" prefWidth="250.0" text="Property Identification No." />
-                            <TableColumn fx:id="seriesColumn" minWidth="250.0" prefWidth="250.0" text="Tax Dec" />
-                              <TableColumn fx:id="ownerColumn" minWidth="250.0" prefWidth="76.0" text="Owner" />
-                              <TableColumn fx:id="locationColumn" minWidth="250.0" prefWidth="250.0" text="Location" />
-                              <TableColumn maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="168.00003662109384" text="File" />
-                          </columns>
-                        </TableView>
-                     </children>
-                  </AnchorPane>
-            </content>
-          </Tab>
-          <Tab text="Archived Tax Declarations">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <TableView fx:id="ATDTaxDec" prefHeight="418.0" prefWidth="708.0">
-                           <columns>
-                              <TableColumn fx:id="apinColumn" prefWidth="75.0" text="C1" />
-                              <TableColumn fx:id="aseriesColumn" prefWidth="75.0" text="C2" />
-                              <TableColumn fx:id="aownerColumn" prefWidth="75.0" text="C3" />
-                              <TableColumn fx:id="alocationColumn" prefWidth="75.0" text="C4" />
-                              <TableColumn prefWidth="75.0" text="C5" />
-                           </columns>
-                        </TableView>
-                     </children>
-                  </AnchorPane>
-            </content>
-          </Tab>
-        </tabs>
-      </TabPane>
       <Button fx:id="btnADD" layoutX="39.0" layoutY="617.0" mnemonicParsing="false" onAction="#addData" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #89d264;" stylesheets="@application.css" text="Add" />
-      <TextField fx:id="tfSEARCH" layoutX="756.0" layoutY="161.0" prefHeight="39.0" prefWidth="206.0" promptText="Search" style="-fx-background-color: #EDF1D6;" AnchorPane.rightAnchor="37.599999999999994" />
       <Label layoutX="304.0" layoutY="50.0" prefHeight="86.0" prefWidth="700.0" text="Assessors Tax Declaration Record" textAlignment="CENTER" AnchorPane.rightAnchor="36.0">
          <font>
             <Font name="Libre Franklin Bold" size="42.0" />
@@ -69,5 +30,45 @@
          <opaqueInsets>
             <Insets />
          </opaqueInsets></DatePicker>
+      <Label layoutX="1040.0" layoutY="211.0" prefHeight="439.0" prefWidth="421.0" style="-fx-border-color: black;" text="Image" textAlignment="CENTER" AnchorPane.bottomAnchor="49.80000000000001" AnchorPane.leftAnchor="1039.8000000000002" AnchorPane.rightAnchor="9.399999999999977" AnchorPane.topAnchor="211.2" />
+      <TabPane layoutX="259.0" layoutY="201.0" prefHeight="460.0" prefWidth="767.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="39.0" AnchorPane.leftAnchor="259.0" AnchorPane.topAnchor="200.79999999999995">
+        <tabs>
+          <Tab text="Tax Declarations">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="418.0" prefWidth="998.0">
+                     <children>
+                        <TableView fx:id="TDTaxDec" layoutX="1.0" layoutY="1.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="417.0" prefWidth="766.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="1.0">
+                          <columns>
+                            <TableColumn fx:id="pinColumn" minWidth="190.0" prefWidth="190.0" text="Property Identification No." />
+                            <TableColumn fx:id="seriesColumn" maxWidth="200.0" minWidth="172.79994201660156" prefWidth="172.79994201660156" text="Tax Dec" />
+                              <TableColumn fx:id="ownerColumn" maxWidth="200.0" minWidth="150.0" prefWidth="168.00003051757812" text="Owner" />
+                              <TableColumn fx:id="locationColumn" maxWidth="200.0" minWidth="35.99993896484375" prefWidth="136.0" text="Location" />
+                              <TableColumn maxWidth="100.0" minWidth="0.0" prefWidth="99.20001220703125" text="File" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Archived Tax Declarations">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="ATDTaxDec" prefHeight="418.0" prefWidth="766.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="1.0">
+                           <columns>
+                              <TableColumn fx:id="apinColumn" minWidth="190.0" prefWidth="190.0" text="C1" />
+                              <TableColumn fx:id="aseriesColumn" maxWidth="200.0" minWidth="172.79994201660156" prefWidth="172.79994201660156" text="C2" />
+                              <TableColumn fx:id="aownerColumn" minWidth="150.0" prefWidth="168.00003051757812" text="C3" />
+                              <TableColumn fx:id="alocationColumn" prefWidth="136.0" text="C4" />
+                              <TableColumn prefWidth="99.20001220703125" text="C5" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+      <TextField fx:id="tfSEARCH" layoutX="819.0" layoutY="154.0" prefHeight="39.0" prefWidth="206.0" promptText="Search" style="-fx-background-color: #EDF1D6;" />
    </children>
 </AnchorPane>
