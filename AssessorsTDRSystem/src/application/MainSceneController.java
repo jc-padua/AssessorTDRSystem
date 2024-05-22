@@ -56,6 +56,8 @@ public class MainSceneController implements Initializable {
 	@FXML
 	private Button btnUPLOAD;
 	@FXML
+	private Button btnUPDATE;
+	@FXML
 	private Button btnADD;
 	@FXML
 	private Button btnDELETE;
