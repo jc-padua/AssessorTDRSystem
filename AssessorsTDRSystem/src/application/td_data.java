@@ -6,13 +6,15 @@ public class td_data {
     private String owner;
     private String location;
     private Boolean archive;
+    private byte[] fileData;
 
-    public td_data(String pin, String snumber, String owner, String location, Boolean archive) {
+    public td_data(String pin, String snumber, String owner, String location, Boolean archive, byte[] fileData) {
     	this.pin = pin;
         this.snumber = snumber;
         this.owner = owner;
         this.location = location;
         this.archive = archive;
+        this.fileData = fileData;
 	}
 
 	public String getPin() {
@@ -55,6 +57,14 @@ public class td_data {
     	this.archive = archive;
     }
     
+    public byte[] getFileData() {
+    	return fileData;
+    }
+    
+    public void setFileData(byte[] fileData) {
+    	this.fileData = fileData;
+    }
+    
     @Override
     public String toString() {
         return "td_data{" +
@@ -63,6 +73,7 @@ public class td_data {
                 ", owner='" + owner + '\'' +
                 ", location='" + location + '\'' +
                 ", archive='" + archive + '\'' +
+                ", fileData=" + (fileData != null ? "Present" : "Absent") +
                 '}';
     }
 }

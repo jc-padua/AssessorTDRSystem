@@ -18,7 +18,7 @@
       <TextField fx:id="tfSNUMBER" layoutX="40.0" layoutY="310.0" prefHeight="39.0" prefWidth="205.0" promptText="Enter S. Number" style="-fx-background-color: #EDF1D6;" />
       <TextField fx:id="tfOWNER" layoutX="40.0" layoutY="357.0" prefHeight="39.0" prefWidth="205.0" promptText="Enter Owner" style="-fx-background-color: #EDF1D6;" />
       <TextField fx:id="tfLOCATION" layoutX="40.0" layoutY="404.0" prefHeight="39.0" prefWidth="205.0" promptText="Enter Location" style="-fx-background-color: #EDF1D6;" />
-      <Button fx:id="btnUPLOAD" layoutX="40.0" layoutY="452.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #EDF1D6;" text="Upload File" />
+      <Button fx:id="btnUPLOAD" layoutX="40.0" layoutY="452.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #EDF1D6;" text="Upload File" onAction="#uploadFile" />
       <Button fx:id="btnADD" layoutX="39.0" layoutY="617.0" mnemonicParsing="false" onAction="#addData" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #89d264;" stylesheets="@application.css" text="Add" />
       <Label layoutX="304.0" layoutY="50.0" prefHeight="86.0" prefWidth="700.0" text="Assessors Tax Declaration Record" textAlignment="CENTER" AnchorPane.rightAnchor="36.0">
          <font>
@@ -43,7 +43,7 @@
                             <TableColumn fx:id="seriesColumn" maxWidth="200.0" minWidth="172.79994201660156" prefWidth="172.79994201660156" text="Tax Dec" />
                               <TableColumn fx:id="ownerColumn" maxWidth="200.0" minWidth="150.0" prefWidth="168.00003051757812" text="Owner" />
                               <TableColumn fx:id="locationColumn" maxWidth="200.0" minWidth="35.99993896484375" prefWidth="136.0" text="Location" />
-                              <TableColumn maxWidth="100.0" minWidth="0.0" prefWidth="99.20001220703125" text="File" />
+                              <TableColumn fx:id="fileColumn" maxWidth="100.0" minWidth="0.0" prefWidth="99.20001220703125" text="File" />
                           </columns>
                         </TableView>
                      </children>

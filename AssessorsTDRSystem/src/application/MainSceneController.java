@@ -15,7 +15,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.MenuItem;
 
 import java.io.File;
-
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -38,6 +38,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class MainSceneController implements Initializable {
 	
@@ -76,6 +78,8 @@ public class MainSceneController implements Initializable {
     @FXML
     private TableColumn<td_data, String> locationColumn;
     @FXML
+    private TableColumn<td_data, String> fileColumn;
+    @FXML
 	private TableColumn<atd_data, String> apinColumn;
 	@FXML
     private TableColumn<atd_data, String> aseriesColumn;
@@ -101,6 +105,10 @@ public class MainSceneController implements Initializable {
         seriesColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSnumber()));
         ownerColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOwner()));
         locationColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLocation()));
+        fileColumn.setCellValueFactory(cellData -> {
+            byte[] fileData = cellData.getValue().getFileData();
+            return new SimpleStringProperty(fileData != null ? "File Present" : "No File");
+        });
         
         apinColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPin()));
         aseriesColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSnumber()));
@@ -413,7 +421,7 @@ public class MainSceneController implements Initializable {
                 String location = rs.getString("location");
                 Boolean archive = rs.getBoolean("archive");
 
-                td_data taxData = new td_data(pin, series, owner, location, archive);
+                td_data taxData = new td_data(pin, series, owner, location, archive, null);
                 taxDecList.add(taxData);
             }
 
@@ -494,6 +502,28 @@ public class MainSceneController implements Initializable {
 
         if (selectedFile != null) {
             System.out.println("Selected File: " + selectedFile.getAbsolutePath());
+
+            // Convert file to byte array
+            byte[] fileData = null;
+            try {
+                Path filePath = selectedFile.toPath();
+                fileData = Files.readAllBytes(filePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // Get the selected item from the table
+            td_data selectedItem = TDTaxDec.getSelectionModel().getSelectedItem();
+
+            if (selectedItem != null) {
+                // Update the fileData of the selected item
+                selectedItem.setFileData(fileData);
+
+                // Refresh the table view to show the updated file data status
+                TDTaxDec.refresh();
+            } else {
+                System.out.println("No item selected in the table.");
+            }
         } else {
             System.out.println("File selection canceled.");
         }
@@ -524,7 +554,7 @@ public class MainSceneController implements Initializable {
                 alert.setContentText("Successfully Added!");
                 alert.show();
 
-                td_data newTaxData = new td_data(pin, snumber, owner, location, archive);
+                td_data newTaxData = new td_data(pin, snumber, owner, location, archive, null);
                 taxDecList.add(newTaxData);
                 TDTaxDec.setItems(taxDecList);
                 
