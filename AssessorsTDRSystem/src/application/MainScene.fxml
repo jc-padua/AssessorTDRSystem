@@ -25,7 +25,7 @@
             <Font name="Libre Franklin Bold" size="42.0" />
          </font>
       </Label>
-      <Button fx:id="btnUPDATE" layoutX="40.0" layoutY="571.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #89d264;" stylesheets="@application.css" text="Update" />
+      <Button fx:id="btnUPDATE" layoutX="40.0" layoutY="571.0" mnemonicParsing="false" onAction="#updateData" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #89d264;" stylesheets="@application.css" text="Update" />
       <DatePicker fx:id="dpDATE" editable="false" layoutX="786.0" layoutY="14.0" AnchorPane.rightAnchor="20.0">
          <opaqueInsets>
             <Insets />

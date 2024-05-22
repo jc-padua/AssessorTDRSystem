@@ -117,8 +117,77 @@ public class MainSceneController implements Initializable {
         checkDB();
         setupSearch();
         
+     // Initialize the update button
+        btnUPDATE.setDisable(true);
+
+        // Add listener for table row selection
+        TDTaxDec.setRowFactory(tv -> {
+            TableRow<td_data> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+                    td_data rowData = row.getItem();
+                    if (rowData != null) {
+                        populateTextFields(rowData);
+                        btnUPDATE.setDisable(false);
+                    }
+                }
+            });
+            return row;
+        });
     } 
     
+    private void populateTextFields(td_data data) {
+        tfPIN.setText(data.getPin());
+        tfSNUMBER.setText(data.getSnumber());
+        tfOWNER.setText(data.getOwner());
+        tfLOCATION.setText(data.getLocation());
+    }
+    
+    @FXML
+    void updateData(ActionEvent event) {
+        String pin = tfPIN.getText();
+        String snumber = tfSNUMBER.getText();
+        String owner = tfOWNER.getText();
+        String location = tfLOCATION.getText();
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");
+            pst = con.prepareStatement("UPDATE taxDec SET series_number = ?, owner = ?, location = ? WHERE pin = ?");
+            pst.setString(1, snumber);
+            pst.setString(2, owner);
+            pst.setString(3, location);
+            pst.setString(4, pin);
+
+            int affectedRows = pst.executeUpdate();
+            if (affectedRows > 0) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText(null);
+                alert.setContentText("Successfully Updated!");
+                alert.show();
+
+                loadDataFromDatabase();
+                clearInputFields();
+                btnUPDATE.setDisable(true);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            showErrorAlert("Error occurred while updating data!");
+        } finally {
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
     private void setupSearch () {
     	FilteredList<td_data> filteredData = new FilteredList<>(taxDecList, b -> true);
     	FilteredList<atd_data> afilteredData = new FilteredList<>(ataxDecList, b -> true);
