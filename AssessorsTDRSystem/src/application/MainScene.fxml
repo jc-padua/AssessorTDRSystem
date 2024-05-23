@@ -72,6 +72,6 @@
       <TextField fx:id="tfSEARCH" layoutX="819.0" layoutY="154.0" prefHeight="39.0" prefWidth="206.0" promptText="Search" style="-fx-background-color: #EDF1D6;" />
       <Button fx:id="btnCLEAR" layoutX="38.0" layoutY="545.0" mnemonicParsing="false" onAction="#clearInputFields" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #89d264;" stylesheets="@application.css" text="Clear" />
       <Label fx:id="lblFILEPATH" layoutX="40.0" layoutY="454.0" prefHeight="18.0" prefWidth="206.0" text="No file uploaded" textAlignment="CENTER" />
-      <ImageView fx:id="pdfImageView" fitHeight="566.0" fitWidth="425.0" layoutX="1035.0" layoutY="201.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="pdfImageView" fitHeight="573.0" fitWidth="425.0" layoutX="1035.0" layoutY="201.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>
