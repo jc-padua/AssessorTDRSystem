@@ -9,9 +9,8 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import javax.swing.JOptionPane;
-
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 
 import java.io.File;
@@ -26,6 +25,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
@@ -38,8 +40,15 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import javafx.embed.swing.SwingFXUtils;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 public class MainSceneController implements Initializable {
 	
@@ -55,6 +64,8 @@ public class MainSceneController implements Initializable {
 	private TextField tfOWNER;
 	@FXML
 	private TextField tfLOCATION;
+	@FXML
+	private Label lblFILEPATH;
 	@FXML
 	private Button btnUPLOAD;
 	@FXML
@@ -90,6 +101,11 @@ public class MainSceneController implements Initializable {
     @FXML
     private TextField tfSEARCH;
     
+    @FXML
+    private ImageView pdfImageView;
+    
+    private byte[] fileData;
+    
     private ObservableList<td_data> taxDecList;
     
     private ObservableList<atd_data> ataxDecList;
@@ -105,6 +121,7 @@ public class MainSceneController implements Initializable {
         seriesColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSnumber()));
         ownerColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOwner()));
         locationColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLocation()));
+        
         fileColumn.setCellValueFactory(cellData -> {
             byte[] fileData = cellData.getValue().getFileData();
             return new SimpleStringProperty(fileData != null ? "File Present" : "No File");
@@ -125,24 +142,10 @@ public class MainSceneController implements Initializable {
         checkDB();
         setupSearch();
         
-     // Initialize the update button
         btnUPDATE.setDisable(true);
-
-        // Add listener for table row selection
-        TDTaxDec.setRowFactory(tv -> {
-            TableRow<td_data> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
-                    td_data rowData = row.getItem();
-                    if (rowData != null) {
-                        populateTextFields(rowData);
-                        btnUPDATE.setDisable(false);
-                    }
-                }
-            });
-            return row;
-        });
+       
     } 
+    
     
     private void populateTextFields(td_data data) {
         tfPIN.setText(data.getPin());
@@ -257,13 +260,21 @@ public class MainSceneController implements Initializable {
 		TDTaxDec.setRowFactory(tv -> {
             TableRow<td_data> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
-                if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+                if (!row.isEmpty() && event.getButton() == MouseButton.SECONDARY && event.getClickCount() == 1) {
                     td_data rowData = row.getItem();
                     if (rowData != null) {
                         System.out.println("Selected item: " + rowData);
                     }
+                } else if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                	td_data rowData = row.getItem();
+                    if (rowData != null) {
+                        populateTextFields(rowData);
+                        btnUPDATE.setDisable(false);
+//                        displayPDF(rowData.getFileData()); ERROR
+                    }
                 }
             });
+            
             row.contextMenuProperty().bind(
                     Bindings.when(row.emptyProperty())
                             .then((ContextMenu) null)
@@ -288,6 +299,7 @@ public class MainSceneController implements Initializable {
 			}
 		});
 		
+		
 		ContextMenu acontextMenu = new ContextMenu();
 		MenuItem amenuArchive = new MenuItem("Restore");
 		acontextMenu.getItems().addAll(amenuArchive);
@@ -295,7 +307,7 @@ public class MainSceneController implements Initializable {
 		ATDTaxDec.setRowFactory(tv -> {
             TableRow<atd_data> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
-                if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+                if (!row.isEmpty() && event.getButton() == MouseButton.SECONDARY && event.getClickCount() == 1) {
                     atd_data rowData = row.getItem();
                     if (rowData != null) {
                         System.out.println("Selected item: " + rowData);
@@ -378,14 +390,14 @@ public class MainSceneController implements Initializable {
 	        }
 	    }
 	}
-	// TO DELETE
+	
 	private void deleteFromDatabase(td_data selectedItem) {
 		try {
 	        Class.forName("org.sqlite.JDBC");
 	        con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");
 	        pst = con.prepareStatement("DELETE FROM taxDec WHERE pin = ?");
 	        pst.setString(1, selectedItem.getPin());
-//	        pst.executeUpdate();
+	        pst.executeUpdate();
 	        System.out.println(selectedItem.getPin());
 	        
 	        loadDataFromDatabase();
@@ -420,8 +432,9 @@ public class MainSceneController implements Initializable {
                 String owner = rs.getString("owner");
                 String location = rs.getString("location");
                 Boolean archive = rs.getBoolean("archive");
+                byte[] fileData = rs.getBytes("file_data");
 
-                td_data taxData = new td_data(pin, series, owner, location, archive, null);
+                td_data taxData = new td_data(pin, series, owner, location, archive, fileData);
                 taxDecList.add(taxData);
             }
 
@@ -479,6 +492,13 @@ public class MainSceneController implements Initializable {
         }
     }
     
+    private void showInfoAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
     private void showErrorAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -491,43 +511,40 @@ public class MainSceneController implements Initializable {
     @FXML
     void uploadFile(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Upload File");
-        fileChooser.getExtensionFilters().addAll(
-                new ExtensionFilter("Text Files", "*.txt"),
-                new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"),
-                new ExtensionFilter("All Files", "*.*")
-        );
-
+        fileChooser.getExtensionFilters().add(new ExtensionFilter("PDF Files", "*.pdf"));
         File selectedFile = fileChooser.showOpenDialog(null);
 
         if (selectedFile != null) {
-            System.out.println("Selected File: " + selectedFile.getAbsolutePath());
-
-            // Convert file to byte array
-            byte[] fileData = null;
             try {
-                Path filePath = selectedFile.toPath();
-                fileData = Files.readAllBytes(filePath);
+                fileData = java.nio.file.Files.readAllBytes(selectedFile.toPath());
+                lblFILEPATH.setText(selectedFile.getAbsolutePath());
             } catch (IOException e) {
                 e.printStackTrace();
+                showErrorAlert("Error occurred while reading the file!");
             }
-
-            // Get the selected item from the table
-            td_data selectedItem = TDTaxDec.getSelectionModel().getSelectedItem();
-
-            if (selectedItem != null) {
-                // Update the fileData of the selected item
-                selectedItem.setFileData(fileData);
-
-                // Refresh the table view to show the updated file data status
-                TDTaxDec.refresh();
-            } else {
-                System.out.println("No item selected in the table.");
-            }
-        } else {
-            System.out.println("File selection canceled.");
         }
     }
+
+    // ERROR
+    private void displayPDF(byte[] pdfData) {
+        try {
+            // Convert byte array to PDF document
+            PDDocument document = PDDocument.load(pdfData);
+            PDFRenderer pdfRenderer = new PDFRenderer(document);
+            BufferedImage bufferedImage = pdfRenderer.renderImageWithDPI(0, 300, ImageType.RGB);
+
+            // Convert BufferedImage to JavaFX Image
+            WritableImage writable = SwingFXUtils.toFXImage(bufferedImage, null);
+            pdfImageView.setImage(writable);
+
+            document.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error occurred while displaying the PDF!");
+        }
+    }
+
+
 
     @FXML
     void addData(ActionEvent event) {
@@ -536,15 +553,17 @@ public class MainSceneController implements Initializable {
         String owner = tfOWNER.getText();
         String location = tfLOCATION.getText();
         Boolean archive = false;
+
         try {
             Class.forName("org.sqlite.JDBC");
             con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");
-            pst = con.prepareStatement("INSERT INTO taxDec (pin,series_number,owner,location,archive) VALUES (?,?,?,?,?) ");
+            pst = con.prepareStatement("INSERT INTO taxDec (pin, series_number, owner, location, archive, file_data) VALUES (?, ?, ?, ?, ?, ?)");
             pst.setString(1, pin);
             pst.setString(2, snumber);
             pst.setString(3, owner);
             pst.setString(4, location);
             pst.setBoolean(5, archive);
+            pst.setBytes(6, fileData); // Bind fileData to the statement
 
             int affectedRows = pst.executeUpdate();
             if (affectedRows > 0) {
@@ -554,7 +573,7 @@ public class MainSceneController implements Initializable {
                 alert.setContentText("Successfully Added!");
                 alert.show();
 
-                td_data newTaxData = new td_data(pin, snumber, owner, location, archive, null);
+                td_data newTaxData = new td_data(pin, snumber, owner, location, archive, fileData);
                 taxDecList.add(newTaxData);
                 TDTaxDec.setItems(taxDecList);
                 
@@ -562,6 +581,7 @@ public class MainSceneController implements Initializable {
                 setupSearch();
                 
                 clearInputFields();
+                lblFILEPATH.setText(""); // Clear the file path label after successful upload
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -586,8 +606,10 @@ public class MainSceneController implements Initializable {
         }
     }
 
-	
-	 private void clearInputFields() {
+
+
+    
+	public void clearInputFields() {
 		tfPIN.clear();
         tfSNUMBER.clear();
         tfOWNER.clear();
@@ -613,6 +635,17 @@ public class MainSceneController implements Initializable {
 	    }
 	}
 
-
+	  private void closeConnection() {
+	        try {
+	            if (pst != null) {
+	                pst.close();
+	            }
+	            if (con != null) {
+	                con.close();
+	            }
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();
+	        }
+	    }
 	
 }

@@ -1,7 +1,5 @@
 package application;
 
-import java.sql.*;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -34,7 +32,8 @@ public class SQLiteDatabase {
                      "series_number TEXT NOT NULL, " +
                      "owner TEXT NOT NULL, " +
                      "location TEXT NOT NULL, " +
-                     "archive INTEGER DEFAULT 0" +
+                     "archive INTEGER DEFAULT 0, " +
+                     "file_data BLOB" +
                      ");";
         
         try (Connection conn = openDB(); Statement stmt = conn.createStatement()) {

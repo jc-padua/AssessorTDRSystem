@@ -9,28 +9,28 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1471.0" style="-fx-background-color: #609966;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainSceneController">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="806.0" prefWidth="1471.0" style="-fx-background-color: #609966;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainSceneController">
    <children>
       <TextField fx:id="tfPIN" layoutX="40.0" layoutY="264.0" prefHeight="39.0" prefWidth="205.0" promptText="Enter Pin" style="-fx-background-color: #EDF1D6;" />
       <TextField fx:id="tfSNUMBER" layoutX="40.0" layoutY="310.0" prefHeight="39.0" prefWidth="205.0" promptText="Enter S. Number" style="-fx-background-color: #EDF1D6;" />
       <TextField fx:id="tfOWNER" layoutX="40.0" layoutY="357.0" prefHeight="39.0" prefWidth="205.0" promptText="Enter Owner" style="-fx-background-color: #EDF1D6;" />
       <TextField fx:id="tfLOCATION" layoutX="40.0" layoutY="404.0" prefHeight="39.0" prefWidth="205.0" promptText="Enter Location" style="-fx-background-color: #EDF1D6;" />
-      <Button fx:id="btnUPLOAD" layoutX="40.0" layoutY="452.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #EDF1D6;" text="Upload File" onAction="#uploadFile" />
-      <Button fx:id="btnADD" layoutX="39.0" layoutY="617.0" mnemonicParsing="false" onAction="#addData" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #89d264;" stylesheets="@application.css" text="Add" />
+      <Button fx:id="btnUPLOAD" layoutX="39.0" layoutY="471.0" mnemonicParsing="false" onAction="#uploadFile" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #EDF1D6;" text="Upload File" />
+      <Button fx:id="btnADD" layoutX="38.0" layoutY="685.0" mnemonicParsing="false" onAction="#addData" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #89d264;" stylesheets="@application.css" text="Add" />
       <Label layoutX="304.0" layoutY="50.0" prefHeight="86.0" prefWidth="700.0" text="Assessors Tax Declaration Record" textAlignment="CENTER" AnchorPane.rightAnchor="36.0">
          <font>
             <Font name="Libre Franklin Bold" size="42.0" />
          </font>
       </Label>
-      <Button fx:id="btnUPDATE" layoutX="40.0" layoutY="571.0" mnemonicParsing="false" onAction="#updateData" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #89d264;" stylesheets="@application.css" text="Update" />
+      <Button fx:id="btnUPDATE" layoutX="39.0" layoutY="639.0" mnemonicParsing="false" onAction="#updateData" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #89d264;" stylesheets="@application.css" text="Update" />
       <DatePicker fx:id="dpDATE" editable="false" layoutX="786.0" layoutY="14.0" AnchorPane.rightAnchor="20.0">
          <opaqueInsets>
             <Insets />
          </opaqueInsets></DatePicker>
-      <Label layoutX="1040.0" layoutY="211.0" prefHeight="439.0" prefWidth="421.0" style="-fx-border-color: black;" text="Image" textAlignment="CENTER" AnchorPane.bottomAnchor="49.80000000000001" AnchorPane.leftAnchor="1039.8000000000002" AnchorPane.rightAnchor="9.399999999999977" AnchorPane.topAnchor="211.2" />
       <TabPane layoutX="259.0" layoutY="201.0" prefHeight="460.0" prefWidth="767.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="39.0" AnchorPane.leftAnchor="259.0" AnchorPane.topAnchor="200.79999999999995">
         <tabs>
           <Tab text="Tax Declarations">
@@ -56,11 +56,11 @@
                      <children>
                         <TableView fx:id="ATDTaxDec" prefHeight="418.0" prefWidth="766.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="1.0">
                            <columns>
-                              <TableColumn fx:id="apinColumn" minWidth="190.0" prefWidth="190.0" text="C1" />
-                              <TableColumn fx:id="aseriesColumn" maxWidth="200.0" minWidth="172.79994201660156" prefWidth="172.79994201660156" text="C2" />
-                              <TableColumn fx:id="aownerColumn" minWidth="150.0" prefWidth="168.00003051757812" text="C3" />
-                              <TableColumn fx:id="alocationColumn" prefWidth="136.0" text="C4" />
-                              <TableColumn prefWidth="99.20001220703125" text="C5" />
+                              <TableColumn fx:id="apinColumn" minWidth="190.0" prefWidth="190.0" text="Property Identification No." />
+                              <TableColumn fx:id="aseriesColumn" maxWidth="200.0" minWidth="172.79994201660156" prefWidth="172.79994201660156" text="Tax Dec" />
+                              <TableColumn fx:id="aownerColumn" minWidth="150.0" prefWidth="168.00003051757812" text="Owner" />
+                              <TableColumn fx:id="alocationColumn" prefWidth="136.0" text="Location" />
+                              <TableColumn prefWidth="99.20001220703125" text="File" />
                            </columns>
                         </TableView>
                      </children>
@@ -70,5 +70,8 @@
         </tabs>
       </TabPane>
       <TextField fx:id="tfSEARCH" layoutX="819.0" layoutY="154.0" prefHeight="39.0" prefWidth="206.0" promptText="Search" style="-fx-background-color: #EDF1D6;" />
+      <Button fx:id="btnCLEAR" layoutX="38.0" layoutY="545.0" mnemonicParsing="false" onAction="#clearInputFields" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #89d264;" stylesheets="@application.css" text="Clear" />
+      <Label fx:id="lblFILEPATH" layoutX="40.0" layoutY="454.0" prefHeight="18.0" prefWidth="206.0" text="No file uploaded" textAlignment="CENTER" />
+      <ImageView fx:id="pdfImageView" fitHeight="566.0" fitWidth="425.0" layoutX="1035.0" layoutY="201.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>
