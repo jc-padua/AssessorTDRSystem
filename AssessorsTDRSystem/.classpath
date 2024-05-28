@@ -14,17 +14,17 @@
 	<classpathentry kind="lib" path="C:/Program Files/JavaFX/sqlite-jdbc-3.45.1.0.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/JavaFX/slf4j.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/JavaFX/logback.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/JavaFX/pdfbox-2.0.31.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/JavaFX/commons-logging-1.2.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/JavaFX/pdfbox-debugger-2.0.31.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/JavaFX/pdfbox-tools-2.0.31.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/JavaFX/preflight-2.0.31.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/JavaFX/xmpbox-2.0.31.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/JavaFX/fontbox-2.0.31.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/JavaFX/javafx-swing-21.0.1.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Program Files/JavaFX/fontbox-2.0.31.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/JavaFX/pdfbox-2.0.31.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/JavaFX/pdfbox-debugger-2.0.31.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/JavaFX/pdfbox-tools-2.0.31.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/JavaFX/preflight-2.0.31.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/JavaFX/xmpbox-2.0.31.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

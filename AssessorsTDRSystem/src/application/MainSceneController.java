@@ -43,8 +43,9 @@ import javafx.collections.transformation.SortedList;
 import javafx.embed.swing.SwingFXUtils;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -152,7 +153,10 @@ public class MainSceneController implements Initializable {
         tfSNUMBER.setText(data.getSnumber());
         tfOWNER.setText(data.getOwner());
         tfLOCATION.setText(data.getLocation());
+        Image pdfImage = renderPdfToImage(data.getFileData());
+        pdfImageView.setImage(pdfImage);
     }
+
     
     @FXML
     void updateData(ActionEvent event) {
@@ -270,7 +274,6 @@ public class MainSceneController implements Initializable {
                     if (rowData != null) {
                         populateTextFields(rowData);
                         btnUPDATE.setDisable(false);
-//                        displayPDF(rowData.getFileData()); ERROR
                     }
                 }
             });
@@ -418,42 +421,43 @@ public class MainSceneController implements Initializable {
 	    }
 	}
 	
-    private void loadDataFromDatabase() {
-    	taxDecList.clear();
-        try {
-        	Class.forName("org.sqlite.JDBC");
-			con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM taxDec WHERE archive = 0");
+	private void loadDataFromDatabase() {
+	    taxDecList.clear();
+	    try {
+	        Class.forName("org.sqlite.JDBC");
+	        con = DriverManager.getConnection("jdbc:sqlite:src/assessors.db");
+	        Statement stmt = con.createStatement();
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM taxDec WHERE archive = 0");
 
-            while (rs.next()) {
-                String pin = rs.getString("pin");
-                String series = rs.getString("series_number");
-                String owner = rs.getString("owner");
-                String location = rs.getString("location");
-                Boolean archive = rs.getBoolean("archive");
-                byte[] fileData = rs.getBytes("file_data");
+	        while (rs.next()) {
+	            String pin = rs.getString("pin");
+	            String series = rs.getString("series_number");
+	            String owner = rs.getString("owner");
+	            String location = rs.getString("location");
+	            Boolean archive = rs.getBoolean("archive");
+	            byte[] fileData = rs.getBytes("file_data");
 
-                td_data taxData = new td_data(pin, series, owner, location, archive, fileData);
-                taxDecList.add(taxData);
-            }
+	            td_data taxData = new td_data(pin, series, owner, location, archive, fileData);
+	            taxDecList.add(taxData);
+	        }
 
-            TDTaxDec.setItems(taxDecList);
-            rs.close();
-            stmt.close();
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            showErrorAlert("Error loading data from the database");
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
+	        TDTaxDec.setItems(taxDecList);
+	        rs.close();
+	        stmt.close();
+	    } catch (SQLException | ClassNotFoundException e) {
+	        e.printStackTrace();
+	        showErrorAlert("Error loading data from the database");
+	    } finally {
+	        try {
+	            if (con != null) {
+	                con.close();
+	            }
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();
+	        }
+	    }
+	}
+
     
     private void loadArchiveDataFromDatabase() {
     	ataxDecList.clear();
@@ -525,24 +529,23 @@ public class MainSceneController implements Initializable {
         }
     }
 
-    // ERROR
-    private void displayPDF(byte[] pdfData) {
-        try {
-            // Convert byte array to PDF document
-            PDDocument document = PDDocument.load(pdfData);
-            PDFRenderer pdfRenderer = new PDFRenderer(document);
-            BufferedImage bufferedImage = pdfRenderer.renderImageWithDPI(0, 300, ImageType.RGB);
+    private Image renderPdfToImage(byte[] fileData) {
+        if (fileData == null || fileData.length == 0) {
+            return null;
+        }
 
-            // Convert BufferedImage to JavaFX Image
-            WritableImage writable = SwingFXUtils.toFXImage(bufferedImage, null);
-            pdfImageView.setImage(writable);
-
-            document.close();
+        try (PDDocument document = PDDocument.load(new ByteArrayInputStream(fileData))) {
+            PDFRenderer renderer = new PDFRenderer(document);
+            BufferedImage bufferedImage = renderer.renderImageWithDPI(0, 300, ImageType.RGB);
+            return SwingFXUtils.toFXImage(bufferedImage, null);
         } catch (IOException e) {
             e.printStackTrace();
-            showErrorAlert("Error occurred while displaying the PDF!");
+            showErrorAlert("Error rendering PDF to image");
+            return null;
         }
     }
+    
+    
 
 
 
