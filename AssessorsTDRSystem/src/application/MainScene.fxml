@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="806.0" prefWidth="1471.0" style="-fx-background-color: #609966;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainSceneController">
@@ -21,17 +21,13 @@
       <TextField fx:id="tfLOCATION" layoutX="40.0" layoutY="404.0" prefHeight="39.0" prefWidth="205.0" promptText="Enter Location" style="-fx-background-color: #EDF1D6;" />
       <Button fx:id="btnUPLOAD" layoutX="39.0" layoutY="471.0" mnemonicParsing="false" onAction="#uploadFile" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #EDF1D6;" text="Upload File" />
       <Button fx:id="btnADD" layoutX="38.0" layoutY="685.0" mnemonicParsing="false" onAction="#addData" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #89d264;" stylesheets="@application.css" text="Add" />
-      <Label layoutX="304.0" layoutY="50.0" prefHeight="86.0" prefWidth="700.0" text="Assessors Tax Declaration Record" textAlignment="CENTER" AnchorPane.rightAnchor="36.0">
+      <Label layoutX="271.79999999999995" layoutY="73.0" prefHeight="86.0" prefWidth="1051.0" text="Assessors Tax Declaration Record" textAlignment="CENTER" AnchorPane.rightAnchor="148.0">
          <font>
-            <Font name="Libre Franklin Bold" size="42.0" />
+            <Font name="Libre Franklin Bold" size="59.0" />
          </font>
       </Label>
       <Button fx:id="btnUPDATE" layoutX="39.0" layoutY="639.0" mnemonicParsing="false" onAction="#updateData" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #89d264;" stylesheets="@application.css" text="Update" />
-      <DatePicker fx:id="dpDATE" editable="false" layoutX="786.0" layoutY="14.0" AnchorPane.rightAnchor="20.0">
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets></DatePicker>
-      <TabPane layoutX="259.0" layoutY="201.0" prefHeight="460.0" prefWidth="767.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="39.0" AnchorPane.leftAnchor="259.0" AnchorPane.topAnchor="200.79999999999995">
+      <TabPane layoutX="259.0" layoutY="263.2" prefHeight="504.0" prefWidth="767.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="39.0" AnchorPane.leftAnchor="259.0" AnchorPane.topAnchor="263.0">
         <tabs>
           <Tab text="Tax Declarations">
             <content>
@@ -69,9 +65,18 @@
           </Tab>
         </tabs>
       </TabPane>
-      <TextField fx:id="tfSEARCH" layoutX="819.0" layoutY="154.0" prefHeight="39.0" prefWidth="206.0" promptText="Search" style="-fx-background-color: #EDF1D6;" />
+      <TextField fx:id="tfSEARCH" layoutX="259.0" layoutY="216.0" prefHeight="39.0" prefWidth="206.0" promptText="Search" style="-fx-background-color: #EDF1D6;" />
       <Button fx:id="btnCLEAR" layoutX="38.0" layoutY="545.0" mnemonicParsing="false" onAction="#clearInputFields" prefHeight="39.0" prefWidth="206.0" style="-fx-background-color: #89d264;" stylesheets="@application.css" text="Clear" />
       <Label fx:id="lblFILEPATH" layoutX="40.0" layoutY="454.0" prefHeight="18.0" prefWidth="206.0" text="No file uploaded" textAlignment="CENTER" />
-      <ImageView fx:id="pdfImageView" fitHeight="573.0" fitWidth="425.0" layoutX="1035.0" layoutY="201.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="68.0" layoutY="54.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@image/pagsanjan.png" />
+         </image>
+      </ImageView>
+      <Pane layoutX="1035.0" layoutY="264.0" prefHeight="558.0" prefWidth="425.0" style="-fx-border-color: black; -fx-border-radius: 10;" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="1035.0" AnchorPane.rightAnchor="11.0">
+         <children>
+            <ImageView fx:id="pdfImageView" fitHeight="511.0" fitWidth="425.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </Pane>
    </children>
 </AnchorPane>

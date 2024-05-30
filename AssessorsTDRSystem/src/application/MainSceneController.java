@@ -8,8 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 
@@ -76,8 +74,6 @@ public class MainSceneController implements Initializable {
 	@FXML
 	private Button btnDELETE;
 	@FXML
-	private DatePicker dpDATE;
-	@FXML
 	private TableView<td_data> TDTaxDec;
 	@FXML
 	private TableView<atd_data> ATDTaxDec;
@@ -110,6 +106,8 @@ public class MainSceneController implements Initializable {
     private ObservableList<td_data> taxDecList;
     
     private ObservableList<atd_data> ataxDecList;
+    
+    
     
     public MainSceneController() {
     	taxDecList = FXCollections.observableArrayList();
@@ -145,9 +143,9 @@ public class MainSceneController implements Initializable {
         
         btnUPDATE.setDisable(true);
        
+        
     } 
-    //
-    
+     
     private void populateTextFields(td_data data) {
         tfPIN.setText(data.getPin());
         tfSNUMBER.setText(data.getSnumber());
@@ -617,6 +615,7 @@ public class MainSceneController implements Initializable {
         tfSNUMBER.clear();
         tfOWNER.clear();
         tfLOCATION.clear();
+        pdfImageView.setImage(null);
 	}
 	
 	public void checkDB() {
